@@ -112,6 +112,12 @@ public class App extends JFrame {
 
         // Update the address field when the browser URL changes.
         client_.addDisplayHandler(new CefDisplayHandlerAdapter() {
+
+            @Override
+            public void onTitleChange(CefBrowser browser, String title) {
+                App.this.setTitle(title);
+            }
+
             @Override
             public void onAddressChange(CefBrowser browser, CefFrame frame, String url) {
                 address_.setText(url);

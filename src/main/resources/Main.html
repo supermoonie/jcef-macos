@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="static/css/bootstrap-theme.css">
     <script src="static/js/jquery-3.5.1.js"></script>
     <script src="static/js/bootstrap.js"></script>
+    <!-- Include Handlebars from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script>
+        // compile the template
+        var template = Handlebars.compile("Handlebars <b>{{doesWhat}}</b>");
+        // execute the compiled template and print the output to the console
+        console.log(template({ doesWhat: "rocks!" }));
+    </script>
     <script>
         function execute(cmd) {
             window.cefQuery({
@@ -26,9 +34,43 @@
     </script>
 </head>
 <body class="container">
-<div class="row">
-    <a class="btn btn-default" href="javascript:execute('file:select');" role="button">Select...</a>
+<div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#svgConverter" aria-controls="svgConverter" role="tab" data-toggle="tab">Svg To ...</a></li>
+        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content" style="margin-top: 10px;">
+        <div role="tabpanel" class="tab-pane active" id="svgConverter">
+            <div class="row">
+                <div class="col-md-6 col-sm-0">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Select...
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                            <li><a href="javascript:execute('file:select');">From my Computer</a></li>
+                            <li><a href="#">By URL</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="clearfix visible-xs-block"></div>
+                <div class="col-md-6 col-sm-12" style="text-align: center;">
+                    <a class="btn btn-default" href="#" role="button">Link</a>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="profile">...</div>
+        <div role="tabpanel" class="tab-pane" id="messages">...</div>
+        <div role="tabpanel" class="tab-pane" id="settings">...</div>
+    </div>
 </div>
+
 <div class="row">
     <p class="lead" id="file"></p>
 </div>
