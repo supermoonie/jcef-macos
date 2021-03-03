@@ -1,5 +1,8 @@
 package com.github.supermoonie.jcef;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.util.SystemInfo;
+import com.github.supermoonie.jcef.handler.FileHandler;
 import com.github.supermoonie.jcef.handler.MessageRouterHandler;
 import com.github.supermoonie.jcef.handler.MessageRouterHandlerEx;
 import com.github.supermoonie.jcef.ui.MenuBar;
@@ -11,13 +14,15 @@ import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.browser.CefMessageRouter;
 import org.cef.handler.CefAppHandlerAdapter;
-import org.cef.handler.CefContextMenuHandlerAdapter;
 import org.cef.handler.CefDisplayHandlerAdapter;
 import org.cef.handler.CefFocusHandlerAdapter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 /**
@@ -62,7 +67,6 @@ public class App extends JFrame {
         });
         CefSettings settings = new CefSettings();
         settings.windowless_rendering_enabled = useOSR;
-//        cefApp_ = CefApp.getInstance(settings);
         cefApp_ = JCefLoader.installAndLoadCef();
 
         // (2) JCEF can handle one to many browser instances simultaneous. These
@@ -148,6 +152,7 @@ public class App extends JFrame {
         CefMessageRouter msgRouter = CefMessageRouter.create();
         msgRouter.addHandler(new MessageRouterHandler(), true);
         msgRouter.addHandler(new MessageRouterHandlerEx(client_), false);
+        msgRouter.addHandler(new FileHandler(this), false);
         client_.addMessageRouter(msgRouter);
 
         MenuBar menuBar = new MenuBar(this, browser_);
@@ -173,8 +178,17 @@ public class App extends JFrame {
         });
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+        if (SystemInfo.isMacOS) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
+        // enable window decorations
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JDialog.setDefaultLookAndFeelDecorated(true);
+        FlatLightLaf.install();
+        UIManager.setLookAndFeel(FlatLightLaf.class.getName());
+//        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         boolean useOsr = false;
-        new App("file:///Users/supermoonie/IdeaProjects/jcef-samples/src/main/resources/Main.html", useOsr, false);
+        new App("file:///Users/supermoonie/IdeaProjects/jcef-macos/src/main/resources/Main.html", useOsr, false);
     }
 }

@@ -5,58 +5,35 @@
     <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport"
           name="viewport">
     <title>jcef-samples</title>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
-          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="static/css/bootstrap.css">
+    <link rel="stylesheet" href="static/css/bootstrap-theme.css">
+    <script src="static/js/jquery-3.5.1.js"></script>
+    <script src="static/js/bootstrap.js"></script>
+    <script>
+        function execute(cmd) {
+            window.cefQuery({
+                request: cmd,
+                onSuccess: function (response) {
+                    document.getElementById("file").innerText = response;
+                    document.getElementById("imgTest").src = 'file://' + response;
+                },
+                onFailure: function (error_code, error_message) {
+                    console.log(error_code, error_message);
+                    document.getElementById("file").innerText = error_message;
+                }
+            });
+        }
+    </script>
 </head>
 <body class="container">
-<h1>h1. Bootstrap heading <small>Secondary text</small></h1>
-<h2>h2. Bootstrap heading <small>Secondary text</small></h2>
-<h3>h3. Bootstrap heading <small>Secondary text</small></h3>
-<h4>h4. Bootstrap heading <small>Secondary text</small></h4>
-<h5>h5. Bootstrap heading <small>Secondary text</small></h5>
-<h6>h6. Bootstrap heading <small>Secondary text</small></h6>
-<p>You can use the mark tag to
-    <mark>highlight</mark>
-    text.
-</p>
-<br>
-<del>This line of text is meant to be treated as deleted text.</del>
-<br>
-<s>This line of text is meant to be treated as no longer accurate.</s>
-<br>
-<ins>This line of text is meant to be treated as an addition to the document.</ins>
-<br>
-<u>This line of text will render as underlined</u>
-<br>
-<small>This line of text is meant to be treated as fine print.</small>
-<br>
-<p>The following snippet of text is <strong>rendered as bold text</strong></p>
-<br>
-<em>rendered as italicized text</em>
-<br>
-<p class="text-left">Left aligned text.</p>
-<p class="text-center">Center aligned text.</p>
-<p class="text-right">Right aligned text.</p>
-<p class="text-justify">Justified text.</p>
-<p class="text-nowrap">No wrap text.</p>
-<br>
-<p class="text-lowercase">Lowercased text.</p>
-<p class="text-uppercase">Uppercased text.</p>
-<p class="text-capitalize">Capitalized text.</p>
-<br>
-<div class="btn-group" role="group" aria-label="...">
-    <button type="button" class="btn btn-default">Left</button>
-    <button type="button" class="btn btn-default">Middle</button>
-    <button type="button" class="btn btn-default">Right</button>
+<div class="row">
+    <a class="btn btn-default" href="javascript:execute('file:select');" role="button">Select...</a>
+</div>
+<div class="row">
+    <p class="lead" id="file"></p>
+</div>
+<div class="row">
+    <img src="" height="128" width="128" id="imgTest"/>
 </div>
 </body>
 </html>

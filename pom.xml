@@ -18,43 +18,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.j256.ormlite/ormlite-core -->
-        <dependency>
-            <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
-            <version>5.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.j256.ormlite/ormlite-jdbc -->
-        <dependency>
-            <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-jdbc</artifactId>
-            <version>5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.supermoonie</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.31.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cef</groupId>
-            <artifactId>jcef</artifactId>
-            <version>84.3.8+gc8a556f+chromium-84.0.4147.105-build-16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cef</groupId>
-            <artifactId>jcef-natives-macosx64</artifactId>
-            <version>84.3.8+gc8a556f+chromium-84.0.4147.105</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
     <repositories>
         <!--        <repository>-->
         <!--            <name>mvnrepository</name>-->
@@ -78,6 +41,61 @@
             <url>https://friwi.me/jcef/maven</url>
         </repository>
     </repositories>
+
+    <dependencies>
+        <!-- sqlite -->
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-core</artifactId>
+            <version>5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-jdbc</artifactId>
+            <version>5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.supermoonie</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.31.2</version>
+        </dependency>
+
+        <!-- cef -->
+        <dependency>
+            <groupId>org.cef</groupId>
+            <artifactId>jcef</artifactId>
+            <version>84.3.8+gc8a556f+chromium-84.0.4147.105-build-17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cef</groupId>
+            <artifactId>jcef-natives-macosx64</artifactId>
+            <version>84.3.8+gc8a556f+chromium-84.0.4147.105</version>
+        </dependency>
+
+        <!-- flat look and feel -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>0.44</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>0.44</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-intellij-themes</artifactId>
+            <version>0.44</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <pluginRepositories>
         <pluginRepository>
