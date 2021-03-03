@@ -1,12 +1,10 @@
-package com.github.supermoonie.jcef.ui;
+package com.github.supermoonie.cef.ui;
 
-import com.github.supermoonie.jcef.dialog.DevToolsDialog;
+import com.github.supermoonie.cef.dialog.DevToolsDialog;
 import org.cef.browser.CefBrowser;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 

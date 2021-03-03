@@ -1,4 +1,4 @@
-package com.github.supermoonie.jcef.dialog;
+package com.github.supermoonie.cef.dialog;
 
 import org.cef.browser.CefBrowser;
 

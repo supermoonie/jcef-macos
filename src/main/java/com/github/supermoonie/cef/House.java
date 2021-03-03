@@ -1,4 +1,4 @@
-package com.github.supermoonie.jcef;
+package com.github.supermoonie.cef;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

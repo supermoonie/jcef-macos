@@ -1,4 +1,4 @@
-package com.github.supermoonie.jcef.handler;
+package com.github.supermoonie.cef.handler;
 
 import org.cef.CefClient;
 import org.cef.browser.CefBrowser;

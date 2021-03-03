@@ -1,4 +1,4 @@
-package com.github.supermoonie.jcef;
+package com.github.supermoonie.cef;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;

@@ -1,4 +1,4 @@
-package com.github.supermoonie.jcef;
+package com.github.supermoonie.cef;
 
 import java.util.prefs.Preferences;
 

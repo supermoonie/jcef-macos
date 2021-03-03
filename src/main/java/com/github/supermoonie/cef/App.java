@@ -1,11 +1,11 @@
-package com.github.supermoonie.jcef;
+package com.github.supermoonie.cef;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.util.SystemInfo;
-import com.github.supermoonie.jcef.handler.FileHandler;
-import com.github.supermoonie.jcef.handler.MessageRouterHandler;
-import com.github.supermoonie.jcef.handler.MessageRouterHandlerEx;
-import com.github.supermoonie.jcef.ui.MenuBar;
+import com.github.supermoonie.cef.handler.FileHandler;
+import com.github.supermoonie.cef.handler.MessageRouterHandler;
+import com.github.supermoonie.cef.handler.MessageRouterHandlerEx;
+import com.github.supermoonie.cef.ui.MenuBar;
 import org.cef.CefApp;
 import org.cef.CefClient;
 import org.cef.CefSettings;
