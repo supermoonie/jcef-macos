@@ -9,61 +9,84 @@
     <link rel="stylesheet" href="static/css/bootstrap-theme.css">
     <script src="static/js/jquery-3.5.1.js"></script>
     <script src="static/js/bootstrap.js"></script>
-    <!-- Include Handlebars from a CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="static/js/handlebars.js"></script>
     <script>
-        // compile the template
-        var template = Handlebars.compile("Handlebars <b>{{doesWhat}}</b>");
-        // execute the compiled template and print the output to the console
-        console.log(template({ doesWhat: "rocks!" }));
-    </script>
-    <script>
-        function execute(cmd) {
-            window.cefQuery({
-                request: cmd,
-                onSuccess: function (response) {
-                    document.getElementById("file").innerText = response;
-                    document.getElementById("imgTest").src = 'file://' + response;
-                },
-                onFailure: function (error_code, error_message) {
-                    console.log(error_code, error_message);
-                    document.getElementById("file").innerText = error_message;
+        let svgList = [
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+            {"imgSrc": "file:///Users/supermoonie/Downloads/method-draw-image (4).svg"},
+        ];
+        function selectSvg() {
+            window.fileQuery({
+                request: "file:select:" + JSON.stringify({
+                    "selectType": 0,
+                    "baseDir": null,
+                    "multiSelectionEnabled": true,
+                    "desc": "*.svg",
+                    "extensionFilter": [
+                        "svg"
+                    ]
+                }),
+                onSuccess: function (filePath) {
+                    svgList.push({imgSrc: filePath});
+                    let html = Handlebars.compile($('#svgListTemp').html())({svgList : svgList});
+                    $('#svgList').html(html);
                 }
             });
         }
+        function removeSvg(idx) {
+            svgList.splice(idx, 1);
+            let html = Handlebars.compile($('#svgListTemp').html())({svgList : svgList});
+            $('#svgList').html(html);
+        }
+        window.onload = function () {
+            let html = Handlebars.compile($('#svgListTemp').html())({svgList : svgList});
+            $('#svgList').html(html);
+        }
     </script>
 </head>
-<body class="container">
-<div>
+<body class="container-fluid">
+<div style="margin-top: 5px;">
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#svgConverter" aria-controls="svgConverter" role="tab" data-toggle="tab">Svg To ...</a></li>
+    <ul class="nav nav-tabs navbar-fixed-top" role="tablist">
+        <li role="presentation" class="active"><a href="#svgConverter" aria-controls="svgConverter" role="tab" data-toggle="tab">Svg to png</a></li>
         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
         <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
     </ul>
-
     <!-- Tab panes -->
-    <div class="tab-content" style="margin-top: 10px;">
-        <div role="tabpanel" class="tab-pane active" id="svgConverter">
-            <div class="row">
-                <div class="col-md-6 col-sm-0">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Select...
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a href="javascript:execute('file:select');">From my Computer</a></li>
-                            <li><a href="#">By URL</a></li>
-                        </ul>
+    <div class="tab-content">
+        <!-- svg converter -->
+        <div role="tabpanel" class="tab-pane active" style="position: fixed; left: 0; top: 42px; bottom: 78px; width: 100%; overflow: scroll;" id="svgConverter">
+            <div class="container-fluid" style="margin-top: 10px; height: 80%;" id="svgList">
+
+            </div>
+            <footer class="navbar-fixed-bottom" style="bottom: 5px;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dropdown">
+                                <a class="btn btn-info" style="width: 100%" role="button" href="javascript:selectSvg();">
+                                    Add more Files
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clearfix visible-xs-block"></div>
+                        <div class="col-md-12" style="text-align: center; margin-top: 10px;">
+                            <a class="btn btn-danger" style="width: 100%" href="#" role="button">Convert</a>
+                        </div>
                     </div>
                 </div>
-                <div class="clearfix visible-xs-block"></div>
-                <div class="col-md-6 col-sm-12" style="text-align: center;">
-                    <a class="btn btn-default" href="#" role="button">Link</a>
-                </div>
-            </div>
+            </footer>
         </div>
         <div role="tabpanel" class="tab-pane" id="profile">...</div>
         <div role="tabpanel" class="tab-pane" id="messages">...</div>
@@ -71,11 +94,23 @@
     </div>
 </div>
 
-<div class="row">
-    <p class="lead" id="file"></p>
-</div>
-<div class="row">
-    <img src="" height="128" width="128" id="imgTest"/>
-</div>
+<script id="svgListTemp" type="text/x-handlebars-template">
+    <ul class='list-group'>
+        {{#each svgList}}
+        <li class='list-group-item'>
+            <div class="row">
+                <div class="col-md-10 col-sm-10 col-xs-8">
+                    <img src="file://{{imgSrc}}" width="32" height="32" alt="">
+<!--                    {{@index}}-->
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-4">
+                    <a href="javascript:removeSvg({{@index}});" class="btn btn-danger" role="button">Remove</a>
+                </div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+
 </body>
 </html>

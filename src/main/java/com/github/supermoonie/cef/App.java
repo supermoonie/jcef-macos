@@ -3,10 +3,9 @@ package com.github.supermoonie.cef;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.github.supermoonie.cef.handler.FileHandler;
-import com.github.supermoonie.cef.handler.MessageRouterHandler;
-import com.github.supermoonie.cef.handler.MessageRouterHandlerEx;
 import com.github.supermoonie.cef.ui.MenuBar;
 import org.cef.CefApp;
+import org.cef.CefApp.CefAppState;
 import org.cef.CefClient;
 import org.cef.CefSettings;
 import org.cef.JCefLoader;
@@ -19,19 +18,22 @@ import org.cef.handler.CefFocusHandlerAdapter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 
 /**
- * Hello world!
- *
- * @author supermoonie
+ * This is a simple example application using JCEF.
+ * It displays a JFrame with a JTextField at its top and a CefBrowser in its
+ * center. The JTextField is used to enter and assign an URL to the browser UI.
+ * No additional handlers or callbacks are used in this example.
+ * <p>
+ * The number of used JCEF classes is reduced (nearly) to its minimum and should
+ * assist you to get familiar with JCEF.
+ * <p>
+ * For a more feature complete example have also a look onto the example code
+ * within the package "tests.detailed".
  */
 public class App extends JFrame {
-
     private static final long serialVersionUID = -5570653778104813836L;
     private final JTextField address_;
     private final CefApp cefApp_;
@@ -58,16 +60,16 @@ public class App extends JFrame {
         //     shutting down CEF after disposing it.
         CefApp.addAppHandler(new CefAppHandlerAdapter(null) {
             @Override
-            public void stateHasChanged(org.cef.CefApp.CefAppState state) {
+            public void stateHasChanged(CefAppState state) {
                 // Shutdown the app if the native CEF part is terminated
-                if (state == CefApp.CefAppState.TERMINATED) {
+                if (state == CefAppState.TERMINATED) {
                     System.exit(0);
                 }
             }
         });
         CefSettings settings = new CefSettings();
         settings.windowless_rendering_enabled = useOSR;
-        cefApp_ = JCefLoader.installAndLoadCef();
+        cefApp_ = JCefLoader.installAndLoadCef(settings);
 
         // (2) JCEF can handle one to many browser instances simultaneous. These
         //     browser instances are logically grouped together by an instance of
@@ -108,11 +110,15 @@ public class App extends JFrame {
         //     If this happens, the entered value is passed to the CefBrowser
         //     instance to be loaded as URL.
         address_ = new JTextField(startURL, 100);
-        address_.addActionListener(e -> browser_.loadURL(address_.getText()));
+        address_.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                browser_.loadURL(address_.getText());
+            }
+        });
 
         // Update the address field when the browser URL changes.
         client_.addDisplayHandler(new CefDisplayHandlerAdapter() {
-
             @Override
             public void onTitleChange(CefBrowser browser, String title) {
                 App.this.setTitle(title);
@@ -141,9 +147,7 @@ public class App extends JFrame {
         client_.addFocusHandler(new CefFocusHandlerAdapter() {
             @Override
             public void onGotFocus(CefBrowser browser) {
-                if (browserFocus_) {
-                    return;
-                }
+                if (browserFocus_) return;
                 browserFocus_ = true;
                 KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
                 browser.setFocus(true);
@@ -155,9 +159,7 @@ public class App extends JFrame {
             }
         });
 
-        CefMessageRouter msgRouter = CefMessageRouter.create();
-        msgRouter.addHandler(new MessageRouterHandler(), true);
-        msgRouter.addHandler(new MessageRouterHandlerEx(client_), false);
+        CefMessageRouter msgRouter = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("fileQuery", "cancelFilerQuery"));
         msgRouter.addHandler(new FileHandler(this), false);
         client_.addMessageRouter(msgRouter);
 
@@ -169,8 +171,10 @@ public class App extends JFrame {
         getContentPane().add(address_, BorderLayout.NORTH);
         getContentPane().add(browerUI_, BorderLayout.CENTER);
         pack();
-        setSize(800, 600);
+        setSize(1200, 800);
+        setResizable(true);
         setVisible(true);
+        setLocationRelativeTo(null);
 
         // (6) To take care of shutting down CEF accordingly, it's important to call
         //     the method "dispose()" of the CefApp instance if the Java
@@ -185,6 +189,11 @@ public class App extends JFrame {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+//        // Perform startup initialization on platforms that require it.
+//        if (!CefApp.startup(args)) {
+//            System.out.println("Startup initialization failed!");
+//            return;
+//        }
         if (SystemInfo.isMacOS) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         }
@@ -193,8 +202,11 @@ public class App extends JFrame {
         JDialog.setDefaultLookAndFeelDecorated(true);
         FlatLightLaf.install();
         UIManager.setLookAndFeel(FlatLightLaf.class.getName());
-//        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        // The simple example application is created as anonymous class and points
+        // to Google as the very first loaded page. Windowed rendering mode is used by
+        // default. If you want to test OSR mode set |useOsr| to true and recompile.
         boolean useOsr = false;
-        new App("file:///Users/supermoonie/IdeaProjects/jcef-macos/src/main/resources/Main.html", useOsr, false);
+        new App("file://D:\\Projects\\jcef-win\\src\\main\\resources\\Main.html", useOsr, false);
     }
 }

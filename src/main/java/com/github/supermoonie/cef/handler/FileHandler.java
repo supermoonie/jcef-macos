@@ -1,12 +1,18 @@
 package com.github.supermoonie.cef.handler;
 
+import com.github.supermoonie.cef.handler.request.FileSelectRequest;
+import com.github.supermoonie.cef.util.Jackson;
+import org.apache.commons.lang3.StringUtils;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+
+import static javax.swing.JFileChooser.*;
 
 /**
  * @author supermoonie
@@ -14,7 +20,8 @@ import java.io.File;
  */
 public class FileHandler extends CefMessageRouterHandlerAdapter {
 
-    private static final String FILE_SELECT = "file:select";
+    private static final String FILE_SELECT = "file:select:";
+    private static final String FILE_USER_HOME = "file:user_home";
 
     private final JFrame owner;
 
@@ -29,13 +36,47 @@ public class FileHandler extends CefMessageRouterHandlerAdapter {
                            String request,
                            boolean persistent,
                            CefQueryCallback callback) {
-        if (FILE_SELECT.equals(request)) {
+        if (request.equals(FILE_USER_HOME)) {
+            String userHome = System.getProperty("user.home");
+            callback.success(userHome);
+            return true;
+        }
+        if (request.startsWith(FILE_SELECT)) {
+            String req = request.replace(FILE_SELECT, "");
+            if (StringUtils.isEmpty(req)) {
+                callback.failure(405, "cmd: " + FILE_SELECT + " args is empty!");
+                return true;
+            }
+            final FileSelectRequest fileSelectRequest = Jackson.parse(req, FileSelectRequest.class);
             SwingUtilities.invokeLater(() -> {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser;
+                if (!StringUtils.isEmpty(fileSelectRequest.getBaseDir()) &&
+                        new File(fileSelectRequest.getBaseDir()).exists()) {
+                    fileChooser = new JFileChooser(fileSelectRequest.getBaseDir());
+                } else {
+                    fileChooser = new JFileChooser();
+                }
+                fileChooser.setMultiSelectionEnabled(null == fileSelectRequest.getMultiSelectionEnabled() ? false : fileSelectRequest.getMultiSelectionEnabled());
                 Action details = fileChooser.getActionMap().get("viewTypeDetails");
                 details.actionPerformed(null);
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                switch (fileSelectRequest.getSelectType()) {
+                    case DIRECTORIES_ONLY:
+                        fileChooser.setFileSelectionMode(DIRECTORIES_ONLY);
+                        break;
+                    case FILES_AND_DIRECTORIES:
+                        fileChooser.setFileSelectionMode(FILES_AND_DIRECTORIES);
+                        break;
+                    default:
+                        fileChooser.setFileSelectionMode(FILES_ONLY);
+                        break;
+                }
+
+                if (null != fileSelectRequest.getExtensionFilter() && fileSelectRequest.getExtensionFilter().size() > 0) {
+                    fileChooser.setFileFilter(new FileNameExtensionFilter(fileSelectRequest.getDesc(), fileSelectRequest.getExtensionFilter().toArray(new String[]{})));
+                }
                 if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(owner)) {
+                    File[] selectedFiles = fileChooser.getSelectedFiles();
+
                     File selectedFile = fileChooser.getSelectedFile();
                     callback.success(selectedFile.getAbsolutePath());
                 } else {
