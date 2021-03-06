@@ -17,6 +17,8 @@ public class FileSelectRequest {
 
     private String baseDir;
 
+    private String title;
+
     private Boolean multiSelectionEnabled;
 
     private String desc;
@@ -37,6 +39,14 @@ public class FileSelectRequest {
 
     public void setBaseDir(String baseDir) {
         this.baseDir = baseDir;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Boolean getMultiSelectionEnabled() {

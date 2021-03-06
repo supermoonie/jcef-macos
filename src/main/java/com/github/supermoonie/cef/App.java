@@ -3,6 +3,7 @@ package com.github.supermoonie.cef;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.github.supermoonie.cef.handler.FileHandler;
+import com.github.supermoonie.cef.handler.SvgConvertHandler;
 import com.github.supermoonie.cef.ui.MenuBar;
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
@@ -12,9 +13,14 @@ import org.cef.JCefLoader;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.browser.CefMessageRouter;
-import org.cef.handler.CefAppHandlerAdapter;
-import org.cef.handler.CefDisplayHandlerAdapter;
-import org.cef.handler.CefFocusHandlerAdapter;
+import org.cef.callback.CefAuthCallback;
+import org.cef.callback.CefRequestCallback;
+import org.cef.handler.*;
+import org.cef.misc.BoolRef;
+import org.cef.misc.StringRef;
+import org.cef.network.CefRequest;
+import org.cef.network.CefResponse;
+import org.cef.network.CefURLRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -147,7 +153,9 @@ public class App extends JFrame {
         client_.addFocusHandler(new CefFocusHandlerAdapter() {
             @Override
             public void onGotFocus(CefBrowser browser) {
-                if (browserFocus_) return;
+                if (browserFocus_) {
+                    return;
+                }
                 browserFocus_ = true;
                 KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
                 browser.setFocus(true);
@@ -159,9 +167,89 @@ public class App extends JFrame {
             }
         });
 
-        CefMessageRouter msgRouter = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("fileQuery", "cancelFilerQuery"));
-        msgRouter.addHandler(new FileHandler(this), false);
-        client_.addMessageRouter(msgRouter);
+        client_.addRequestHandler(new CefRequestHandlerAdapter() {
+            @Override
+            public boolean onBeforeBrowse(CefBrowser browser, CefFrame frame, CefRequest request, boolean user_gesture, boolean is_redirect) {
+                return super.onBeforeBrowse(browser, frame, request, user_gesture, is_redirect);
+            }
+
+            @Override
+            public boolean onOpenURLFromTab(CefBrowser browser, CefFrame frame, String target_url, boolean user_gesture) {
+                return super.onOpenURLFromTab(browser, frame, target_url, user_gesture);
+            }
+
+            @Override
+            public CefResourceRequestHandler getResourceRequestHandler(CefBrowser browser, CefFrame frame, CefRequest request, boolean isNavigation, boolean isDownload, String requestInitiator, BoolRef disableDefaultHandling) {
+                return new CefResourceRequestHandlerAdapter() {
+                    @Override
+                    public CefCookieAccessFilter getCookieAccessFilter(CefBrowser browser, CefFrame frame, CefRequest request) {
+                        return super.getCookieAccessFilter(browser, frame, request);
+                    }
+
+                    @Override
+                    public boolean onBeforeResourceLoad(CefBrowser browser, CefFrame frame, CefRequest request) {
+                        return super.onBeforeResourceLoad(browser, frame, request);
+                    }
+
+                    @Override
+                    public CefResourceHandler getResourceHandler(CefBrowser browser, CefFrame frame, CefRequest request) {
+                        return super.getResourceHandler(browser, frame, request);
+                    }
+
+                    @Override
+                    public void onResourceRedirect(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response, StringRef new_url) {
+                        super.onResourceRedirect(browser, frame, request, response, new_url);
+                    }
+
+                    @Override
+                    public boolean onResourceResponse(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response) {
+                        return super.onResourceResponse(browser, frame, request, response);
+                    }
+
+                    @Override
+                    public void onResourceLoadComplete(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response, CefURLRequest.Status status, long receivedContentLength) {
+                        super.onResourceLoadComplete(browser, frame, request, response, status, receivedContentLength);
+                    }
+
+                    @Override
+                    public void onProtocolExecution(CefBrowser browser, CefFrame frame, CefRequest request, BoolRef allowOsExecution) {
+                        super.onProtocolExecution(browser, frame, request, allowOsExecution);
+                    }
+                };
+            }
+
+            @Override
+            public boolean getAuthCredentials(CefBrowser browser, String origin_url, boolean isProxy, String host, int port, String realm, String scheme, CefAuthCallback callback) {
+                return super.getAuthCredentials(browser, origin_url, isProxy, host, port, realm, scheme, callback);
+            }
+
+            @Override
+            public boolean onQuotaRequest(CefBrowser browser, String origin_url, long new_size, CefRequestCallback callback) {
+                return super.onQuotaRequest(browser, origin_url, new_size, callback);
+            }
+
+            @Override
+            public boolean onCertificateError(CefBrowser browser, CefLoadHandler.ErrorCode cert_error, String request_url, CefRequestCallback callback) {
+                return super.onCertificateError(browser, cert_error, request_url, callback);
+            }
+
+            @Override
+            public void onPluginCrashed(CefBrowser browser, String pluginPath) {
+                super.onPluginCrashed(browser, pluginPath);
+            }
+
+            @Override
+            public void onRenderProcessTerminated(CefBrowser browser, TerminationStatus status) {
+                super.onRenderProcessTerminated(browser, status);
+            }
+        });
+
+        CefMessageRouter fileRouter = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("fileQuery", "cancelFilerQuery"));
+        fileRouter.addHandler(new FileHandler(this), false);
+        CefMessageRouter svgRouter = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("svgQuery", "cancelSvgQuery"));
+        svgRouter.addHandler(new SvgConvertHandler(), false);
+        client_.addMessageRouter(fileRouter);
+        client_.addMessageRouter(svgRouter);
 
         MenuBar menuBar = new MenuBar(this, browser_);
         setJMenuBar(menuBar);
@@ -207,6 +295,6 @@ public class App extends JFrame {
         // to Google as the very first loaded page. Windowed rendering mode is used by
         // default. If you want to test OSR mode set |useOsr| to true and recompile.
         boolean useOsr = false;
-        new App("file://D:\\Projects\\jcef-win\\src\\main\\resources\\Main.html", useOsr, false);
+        new App("file:///Users/supermoonie/IdeaProjects/jcef-macos/src/main/resources/Main.html", useOsr, false);
     }
 }

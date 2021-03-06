@@ -10,7 +10,7 @@ public class FileSelectResponse {
 
     private Long size;
 
-    private String modifyDate;
+    private Long modifyDate;
 
     public String getPath() {
         return path;
@@ -28,11 +28,11 @@ public class FileSelectResponse {
         this.size = size;
     }
 
-    public String getModifyDate() {
+    public Long getModifyDate() {
         return modifyDate;
     }
 
-    public void setModifyDate(String modifyDate) {
+    public void setModifyDate(Long modifyDate) {
         this.modifyDate = modifyDate;
     }
 }

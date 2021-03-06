@@ -19,22 +19,6 @@
     </properties>
 
     <repositories>
-        <!--        <repository>-->
-        <!--            <name>mvnrepository</name>-->
-        <!--            <id>panda-repository</id>-->
-        <!--            <url>https://repo.panda-lang.org/</url>-->
-        <!--            <layout>default</layout>-->
-        <!--            <releases>-->
-        <!--                <enabled>true</enabled>-->
-        <!--            </releases>-->
-        <!--            <snapshots>-->
-        <!--                <enabled>false</enabled>-->
-        <!--            </snapshots>-->
-        <!--        </repository>-->
-        <!--        <repository>-->
-        <!--            <id>jitpack.io</id>-->
-        <!--            <url>https://jitpack.io</url>-->
-        <!--        </repository>-->
         <repository>
             <id>jcef-maven</id>
             <name>JCef Maven Repository</name>
@@ -59,7 +43,6 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.31.2</version>
         </dependency>
-
         <!-- cef -->
         <dependency>
             <groupId>org.cef</groupId>
@@ -71,7 +54,6 @@
             <artifactId>jcef-natives-macosx64</artifactId>
             <version>84.3.8+gc8a556f+chromium-84.0.4147.105</version>
         </dependency>
-
         <!-- flat look and feel -->
         <dependency>
             <groupId>com.formdev</groupId>
@@ -103,6 +85,17 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>2.11.3</version>
+        </dependency>
+        <!-- batik -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-transcoder</artifactId>
+            <version>1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-codec</artifactId>
+            <version>1.14</version>
         </dependency>
         <!-- commons -->
         <dependency>
